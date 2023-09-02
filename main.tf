@@ -149,7 +149,7 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
     status = "Enabled"
 
     filter {
-      prefix = "*"
+      prefix = "replicate"
     }
 
     source_selection_criteria {
