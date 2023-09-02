@@ -148,6 +148,16 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
     id     = "crossregion"
     status = "Enabled"
 
+    filter {
+      prefix = "*"
+    }
+
+    source_selection_criteria {
+      sse_kms_encrypted_objects {
+        status = "Enabled"
+      }
+    }
+
     destination {
       bucket        = module.s3_secondary.bucket_arn
       storage_class = "STANDARD"
