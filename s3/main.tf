@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source                = "hashicorp/aws"
+      configuration_aliases = [aws]
+    }
+  }
+}
+
 resource "random_string" "bucket" {
   length    = 3
   min_lower = 3
@@ -5,8 +14,7 @@ resource "random_string" "bucket" {
 }
 
 resource "aws_s3_bucket" "main" {
-  bucket = "bucket-${var.affix}-${random_string.bucket.result}"
-
+  bucket        = "bucket-${var.affix}-${random_string.bucket.result}"
   force_destroy = true
 }
 
