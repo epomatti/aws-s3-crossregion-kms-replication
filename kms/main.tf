@@ -16,7 +16,7 @@ locals {
 }
 
 resource "aws_kms_alias" "main" {
-  name          = "alias/dumbkey"
+  name          = "alias/s3replication"
   target_key_id = aws_kms_key.main.id
 }
 
@@ -25,6 +25,8 @@ resource "aws_kms_key" "main" {
   deletion_window_in_days = 10
   enable_key_rotation     = true
 
+
+  # NOTE: Don't know if last statement is required, need to confirm
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

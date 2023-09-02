@@ -119,6 +119,16 @@ data "aws_iam_policy_document" "replication" {
 
     resources = ["${module.s3_secondary.bucket_arn}/*"]
   }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "kms:*",
+    ]
+
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_policy" "replication" {
