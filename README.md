@@ -2,10 +2,10 @@
 
 Configuration details:
 
-- SSE-KMS replication: Enabled
-- Replication Time Control (RTC): Enabled
-- Metrics: Enabled
-- Delete Marker Replication: Enabled
+- SSE-KMS replication: **Enabled**
+- Replication Time Control (RTC): **Enabled**
+- Metrics: **Enabled**
+- Delete Marker Replication: **Enabled**
 
 To start, setup a `.auto.tfvars`:
 
@@ -21,6 +21,13 @@ terraform init
 terraform apply
 ```
 
+The rule setting will replicate key prefix `replicate/`:
+
+```terraform
+filter {
+  prefix = "replicate/"
+}
+```
 To test it, upload a file to the Primary bucket.
 
 ```sh
