@@ -232,3 +232,10 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
     filter_prefix = local.replication_filter_prefix
   }
 }
+
+resource "aws_sns_topic_subscription" "user_updates_sqs_target" {
+  provider  = aws.primary
+  topic_arn = aws_sns_topic.topic.arn
+  protocol  = "email"
+  endpoint  = var.sns_notification_email
+}
