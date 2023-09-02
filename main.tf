@@ -61,7 +61,7 @@ module "s3_secondary" {
 ### Replication ###
 
 data "aws_iam_policy_document" "assume_role" {
-  provider = aws.secondary
+  provider = aws.primary
 
   statement {
     effect = "Allow"
@@ -76,14 +76,14 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "replication" {
-  provider = aws.secondary
+  provider = aws.primary
 
   name               = "tf-s3-crossregion-replication"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 data "aws_iam_policy_document" "replication" {
-  provider = aws.secondary
+  provider = aws.primary
 
   statement {
     effect = "Allow"
@@ -122,14 +122,14 @@ data "aws_iam_policy_document" "replication" {
 }
 
 resource "aws_iam_policy" "replication" {
-  provider = aws.secondary
+  provider = aws.primary
 
   name   = "tf-policy-s3-crossregion-replication"
   policy = data.aws_iam_policy_document.replication.json
 }
 
 resource "aws_iam_role_policy_attachment" "replication" {
-  provider = aws.secondary
+  provider = aws.primary
 
   role       = aws_iam_role.replication.name
   policy_arn = aws_iam_policy.replication.arn

@@ -36,7 +36,16 @@ resource "aws_kms_key" "main" {
         }
         Action   = "kms:*",
         Resource = "*"
-      }
+      },
+      {
+        Sid    = "S3KMSAllow"
+        Action = "kms:*"
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+        Resource = "*"
+      },
     ]
   })
 }
