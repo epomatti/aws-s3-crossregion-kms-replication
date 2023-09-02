@@ -135,6 +135,10 @@ resource "aws_iam_role_policy_attachment" "replication" {
   policy_arn = aws_iam_policy.replication.arn
 }
 
+locals {
+  replication_filter_prefix = "replicate/"
+}
+
 resource "aws_s3_bucket_replication_configuration" "replication" {
   provider = aws.primary
 
@@ -149,7 +153,7 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
     status = "Enabled"
 
     filter {
-      prefix = "replicate/"
+      prefix = local.replication_filter_prefix
     }
 
     source_selection_criteria {
@@ -186,5 +190,45 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
     delete_marker_replication {
       status = "Enabled"
     }
+  }
+}
+
+### Notification ###
+
+data "aws_iam_policy_document" "topic" {
+  provider = aws.primary
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+
+    actions   = ["SNS:Publish"]
+    resources = ["arn:aws:sns:*:*:s3-event-notification-topic"]
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values   = [module.s3_primary.bucket_arn]
+    }
+  }
+}
+
+resource "aws_sns_topic" "topic" {
+  provider = aws.primary
+  name     = "s3-event-notification-topic"
+  policy   = data.aws_iam_policy_document.topic.json
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  provider = aws.primary
+  bucket   = module.s3_primary.bucket_id
+
+  topic {
+    topic_arn     = aws_sns_topic.topic.arn
+    events        = ["s3:Replication:*"]
+    filter_prefix = local.replication_filter_prefix
   }
 }
