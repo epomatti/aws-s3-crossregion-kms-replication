@@ -3,7 +3,7 @@
 Configuration details:
 
 - SSE-KMS replication: Enabled
-- Replication Time Control: Enabled
+- Replication Time Control (RTC): Enabled
 - Metrics: Enabled
 - Delete Marker Replication: Enabled
 
